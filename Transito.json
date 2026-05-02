@@ -7,7 +7,7 @@
           "interval": [
             {
               "field": "cronExpression",
-              "expression": "* * 04 * * 1-6"
+              "expression": "0 0 04 * * 1"
             }
           ]
         }
@@ -15,27 +15,28 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.3,
       "position": [
-        -816,
-        560
+        -256,
+        832
       ],
-      "id": "8fa4d2bd-bd56-4b79-870d-a4d297a2715b",
+      "id": "ddce6f96-b4fd-470e-b432-e99a5022db40",
       "name": "Schedule Trigger"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "--Trocar para: dateadd(day, -20, GETDATE())\nselect a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n\t, c.email_gerente\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n\t\tand a.FILIAL_ORIGEM = b.filial_origem \n\t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\n\t\tjoin GSF_LOJAS_DIRETORIA c on a.filial = c.filial\nwhere a.emissao >= '20250101'\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\n\tand b.data_envio is null\norder by a.emissao asc\n"
+        "query": "select a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n\t, a.valor_total\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n    \t\tand a.FILIAL_ORIGEM = b.filial_origem \n    \t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\nwhere a.emissao < dateadd(day, -20, GETDATE())\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\n\tand b.data_envio is null\norder by a.emissao asc"
       },
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        320,
-        320
+        1008,
+        592
       ],
-      "id": "5a7d456a-316b-4130-84b9-4fa64be73239",
+      "id": "47db714b-b795-4248-ab3a-0d1fa1509348",
       "name": "Microsoft SQL",
       "alwaysOutputData": true,
       "notesInFlow": false,
+      "retryOnFail": true,
       "credentials": {
         "microsoftSql": {
           "id": "KtBQ1uO6JMALaFpK",
@@ -74,8 +75,26 @@
             {
               "id": "ed72e465-7312-4552-94ea-c29553e00b26",
               "name": "email_gerente",
-              "value": "={{ $json.email_gerente }}",
+              "value": "={{ $json.email_gerente.replaceAll(\";\", \",\") }}",
               "type": "string"
+            },
+            {
+              "id": "02dba7ea-7271-4834-8f71-0c0e747e1966",
+              "name": "email_supervisor",
+              "value": "={{ $json.EMAIL_SUPERVISOR }}",
+              "type": "string"
+            },
+            {
+              "id": "8dbfbe7f-0396-42d0-b5e0-983c32bf1fc8",
+              "name": "emissao",
+              "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "d6979faa-d5b3-4a45-b950-b8833895e096",
+              "name": "valor",
+              "value": "={{ $json.valor_total }}",
+              "type": "number"
             }
           ]
         },
@@ -84,10 +103,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        864,
-        304
+        1424,
+        576
       ],
-      "id": "0b2e042c-977f-4269-8efe-0170d747bd5a",
+      "id": "0f56ebfb-4b31-4d8e-a6ec-37768f38fbb0",
       "name": "Edit Fields"
     },
     {
@@ -98,31 +117,11 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1104,
-        304
+        1632,
+        576
       ],
-      "id": "835e793d-b050-4fa2-b717-decada124660",
+      "id": "38872eec-3d00-4cd4-9031-00bbf9d55029",
       "name": "Aggregate"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select DISTINCT(a.filial)\nfrom LOJA_ENTRADAS a\n\tjoin cadastro_cli_for b on a.filial = b.nome_clifor\nwhere emissao <= '20251201'\n\tand a.ENTRADA_CONFERIDA = 0\n\tand b.inativo = 0\norder by filial asc\n"
-      },
-      "type": "n8n-nodes-base.microsoftSql",
-      "typeVersion": 1.1,
-      "position": [
-        -512,
-        272
-      ],
-      "id": "10a137df-955c-4835-a7e6-88ee08830e3f",
-      "name": "Microsoft SQL1",
-      "credentials": {
-        "microsoftSql": {
-          "id": "KtBQ1uO6JMALaFpK",
-          "name": "Banco IB"
-        }
-      }
     },
     {
       "parameters": {
@@ -131,10 +130,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -256,
-        272
+        304,
+        544
       ],
-      "id": "c8bc3445-0489-4fd4-907a-17088dfb9e94",
+      "id": "e8e5b1c8-f2f4-4c5d-8234-7eead3c3b3d7",
       "name": "Loop Over Items"
     },
     {
@@ -144,7 +143,13 @@
             {
               "id": "50f2aebc-b7bf-44ad-a83c-da93f67d2062",
               "name": "filial",
-              "value": "={{ $json.filial }}",
+              "value": "={{ $('Loop Over Items').item.json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "50206051-1938-458d-ab93-fd7d1ab99c3f",
+              "name": "email_enviar",
+              "value": "={{ $json.email }}",
               "type": "string"
             }
           ]
@@ -154,10 +159,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        48,
-        320
+        752,
+        592
       ],
-      "id": "ec88f790-2be5-45cf-94c6-15748fa4fe3e",
+      "id": "09bea885-d35a-4072-a028-3b7a6cb22696",
       "name": "Edit Fields2"
     },
     {
@@ -188,27 +193,28 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        592,
-        320
+        1200,
+        592
       ],
-      "id": "c92feabb-4661-4fd5-901c-c6f3352b7a91",
+      "id": "8db7dc39-102b-4cac-8081-5fc4297f2f9b",
       "name": "If"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "--Trocar para: dateadd(day, -20, GETDATE())\nselect a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n\t, c.email_gerente\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n\t\tand a.FILIAL_ORIGEM = b.filial_origem \n\t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\n\t\tjoin GSF_LOJAS_DIRETORIA c on a.filial = c.filial\nwhere a.emissao >= '20250101'\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\n\tand b.data_envio is null\norder by a.emissao asc\n"
+        "query": "select a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n    , a.valor_total\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n    \t\tand a.FILIAL_ORIGEM = b.filial_origem \n    \t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\nwhere a.emissao < dateadd(day, -20, getdate())\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\n\tand b.data_envio is null\norder by a.emissao asc"
       },
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        320,
-        912
+        1024,
+        1184
       ],
-      "id": "3e7ae70b-263e-437e-a1c2-f52d766a5133",
+      "id": "83287e13-5cf1-4cae-bc46-775d417d5892",
       "name": "Microsoft SQL2",
       "alwaysOutputData": true,
       "notesInFlow": false,
+      "retryOnFail": true,
       "credentials": {
         "microsoftSql": {
           "id": "UkgZstSJ5Wj9ofPE",
@@ -249,6 +255,18 @@
               "name": "email_gerente",
               "value": "={{ $json.email_gerente }}",
               "type": "string"
+            },
+            {
+              "id": "46a56a5e-3803-450c-8435-4ae19895804a",
+              "name": "emissao",
+              "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy')}}",
+              "type": "string"
+            },
+            {
+              "id": "040533ce-38a9-40c0-90fb-0e3a2a64e7d9",
+              "name": "valor",
+              "value": "={{$json.valor_total}}",
+              "type": "string"
             }
           ]
         },
@@ -257,10 +275,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        864,
-        896
+        1488,
+        1168
       ],
-      "id": "ed2ebd19-5965-4263-9d02-1cad99cf65ab",
+      "id": "bdc8601d-5a2f-4aac-9142-b0991850b6fa",
       "name": "Edit Fields3"
     },
     {
@@ -271,24 +289,24 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1104,
-        896
+        1680,
+        1168
       ],
-      "id": "5ed48610-3df5-4be4-8cca-861d2d14a77d",
+      "id": "fbaa91d0-005f-4ceb-9dff-b9cdf1dc4b8b",
       "name": "Aggregate1"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select DISTINCT(a.filial)\nfrom LOJA_ENTRADAS a\n\tjoin cadastro_cli_for b on a.filial = b.nome_clifor\nwhere emissao <= '20251201'\n\tand a.ENTRADA_CONFERIDA = 0\n\tand b.inativo = 0\norder by filial asc\n"
+        "query": "select filial\n    , email_loja\n    , email_supervisor\nfrom TB_FILIAIS_TRANSITO\nwhere inativo = 0"
       },
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        -512,
-        864
+        48,
+        1136
       ],
-      "id": "df3f1cb6-4471-4806-bd96-8a15687ed94a",
+      "id": "df47bf71-1326-4486-8fb2-8658c354018a",
       "name": "Microsoft SQL3",
       "credentials": {
         "microsoftSql": {
@@ -304,10 +322,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -256,
-        864
+        336,
+        1136
       ],
-      "id": "4ebd77a9-c688-4380-ac39-6e40f7797945",
+      "id": "c094dfe3-51de-4945-a891-ea57b81321ca",
       "name": "Loop Over Items1"
     },
     {
@@ -317,7 +335,13 @@
             {
               "id": "50f2aebc-b7bf-44ad-a83c-da93f67d2062",
               "name": "filial",
-              "value": "={{ $json.filial }}",
+              "value": "={{ $('Loop Over Items1').item.json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "0d91d94e-819c-4e95-96ac-1388730a6cba",
+              "name": "email_enviar",
+              "value": "={{ $json.email }}",
               "type": "string"
             }
           ]
@@ -327,10 +351,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        48,
-        912
+        784,
+        1184
       ],
-      "id": "b58f2a76-2212-44d3-8ee2-2e8a1caf271f",
+      "id": "e4929533-5fbe-4eb4-915e-11a8f9efd75d",
       "name": "Edit Fields4"
     },
     {
@@ -361,19 +385,19 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        592,
-        912
+        1264,
+        1184
       ],
-      "id": "6219eccc-3c68-4299-96b2-ba5ebca36df4",
+      "id": "d1c31438-202d-4af6-8bdb-86ee1ef0ab1d",
       "name": "If1"
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "TA6W9QdfYtSJ4y6b",
+          "value": "Jim7tZpkyssIpQFLjPwKf",
           "mode": "list",
-          "cachedResultUrl": "/workflow/TA6W9QdfYtSJ4y6b",
+          "cachedResultUrl": "/workflow/Jim7tZpkyssIpQFLjPwKf",
           "cachedResultName": "Atualiza tabela TRANSITO_ATUALIZAVEL"
         },
         "workflowInputs": {
@@ -391,10 +415,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        1664,
-        1072
+        2432,
+        1344
       ],
-      "id": "68598ada-3fdf-411f-b46f-39deee551e02",
+      "id": "76dfa1e2-609d-44ca-bb80-6f3f24806b8e",
       "name": "Call 'Atualiza tabela TRANSITO_ATUALIZAVEL'1"
     },
     {
@@ -420,10 +444,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1296,
-        1072
+        2128,
+        1344
       ],
-      "id": "36c8bab1-343e-41d9-a6a5-4865c89bd1cf",
+      "id": "1c42addf-4aff-4168-8d55-1b699e974f19",
       "name": "Edit Fields5"
     },
     {
@@ -449,10 +473,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1296,
-        480
+        2048,
+        752
       ],
-      "id": "7e1ce958-3547-4e9a-82ff-5fc96c7a5675",
+      "id": "666aea17-f10b-46db-a4be-2bab8b6e2a06",
       "name": "Edit Fields6"
     },
     {
@@ -464,26 +488,26 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -576,
-        128
+        -16,
+        384
       ],
-      "id": "97f56309-0603-4cda-a8ce-25e55047de15",
+      "id": "7add95fa-4aaa-4a9c-9192-e523f71a8f8d",
       "name": "Sticky Note"
     },
     {
       "parameters": {
-        "content": "## Query que faz a verificação se já não foi cobrada, e pega os dados da NF, filial origem e destino e calcula a quantidade de dias em aberto\n",
+        "content": "## Query que faz a verificação se já não foi cobrada, e pega os dados",
         "height": 992,
-        "width": 320,
+        "width": 208,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        208,
-        80
+        960,
+        352
       ],
-      "id": "af6e8cf3-d0b9-435e-8015-639e8f280314",
+      "id": "d02281b3-a447-471c-b16d-591eaaa65388",
       "name": "Sticky Note1"
     },
     {
@@ -495,10 +519,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1248,
-        208
+        2000,
+        480
       ],
-      "id": "a7f52d37-a181-4852-a736-4e7d8839b8af",
+      "id": "cf7e3f69-7ca3-4065-9060-f2c658a1fea0",
       "name": "Sticky Note2"
     },
     {
@@ -510,10 +534,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1248,
-        784
+        2048,
+        1056
       ],
-      "id": "5dd6920b-d463-4c3e-ab1b-6444c39e965e",
+      "id": "d41c596e-bbd1-4d76-8a67-b3855fd3e83b",
       "name": "Sticky Note3"
     },
     {
@@ -525,10 +549,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -96,
-        576
+        464,
+        848
       ],
-      "id": "18e2151d-cecd-400d-b7d0-51a3c5947489",
+      "id": "14dfe852-ab78-4197-87ac-fc6839cd26d2",
       "name": "Sticky Note4"
     },
     {
@@ -540,35 +564,35 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -80,
-        -32
+        480,
+        240
       ],
-      "id": "61bf038d-3a2a-4ceb-822e-7e5745c18fe2",
+      "id": "bb0f6785-e8db-43c6-a5ee-e7eed8b80551",
       "name": "Sticky Note5"
     },
     {
       "parameters": {
         "content": "## Envia os dados para um sub-workflow para dar baixa na tabela TRANSITO_ATUALIZAVEL",
-        "height": 1008,
+        "height": 960,
         "width": 320,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1536,
-        256
+        2336,
+        576
       ],
-      "id": "e997bba1-c12b-4d6d-bfb0-247997cebf44",
+      "id": "6716c718-a64e-4dd4-9489-25852e705f28",
       "name": "Sticky Note6"
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "TA6W9QdfYtSJ4y6b",
+          "value": "Tm4r5G7GrUkK9cqz",
           "mode": "list",
-          "cachedResultUrl": "/workflow/TA6W9QdfYtSJ4y6b",
+          "cachedResultUrl": "/workflow/Tm4r5G7GrUkK9cqz",
           "cachedResultName": "Atualiza tabela TRANSITO_ATUALIZAVEL"
         },
         "workflowInputs": {
@@ -584,103 +608,163 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        1664,
-        480
+        2432,
+        752
       ],
-      "id": "d5f0efa6-e29b-4a07-ba13-c255b8d36d5c",
+      "id": "4774e7c9-a041-4df5-af77-8286ce73a147",
       "name": "Call 'Atualiza tabela TRANSITO_ATUALIZAVEL'"
     },
     {
       "parameters": {
-        "sendTo": "joaopedro.mlima9@gmail.com",
+        "toRecipients": "joao.lima@inbrands.com.br;rogerio.andrade@inbrands.com.br",
         "subject": "Notas em trânsito",
-        "message": "Todas as notas do banco da TH já foram cobradas.",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "position": [
-        -32,
-        720
-      ],
-      "id": "24a8cf52-642b-4d31-bee2-36d75df13fa4",
-      "name": "Send a message",
-      "webhookId": "81325bef-9d2c-4ea9-a6cf-423523c61cbc",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "zAJHLyiZJO2Vm6S2",
-          "name": "Gmail account"
+        "bodyContent": "Todas as notas do banco da TH já foram cobradas.",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br"
         }
-      }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        544,
+        992
+      ],
+      "id": "44b6779d-7adf-4e2f-bde1-36481bba3dbc",
+      "name": "Envia texto que terminou TH",
+      "webhookId": "38764517-9d1b-453d-bbff-d474414375e7"
     },
     {
       "parameters": {
-        "sendTo": "joaopedro.mlima9@gmail.com",
+        "toRecipients": "joao.lima@inbrands.com.br;rogerio.andrade@inbrands.com.br",
         "subject": "Trânsito notas banco IB",
-        "message": "Todas as notas em trânsito do banco da IB já foram cobradas",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
-      "position": [
-        -16,
-        128
-      ],
-      "id": "0df0ba3d-5995-42fa-af22-cbd9c2e3ac8c",
-      "name": "Send a message1",
-      "webhookId": "f00e7605-d924-47e8-99e2-654f8dab8feb",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "zAJHLyiZJO2Vm6S2",
-          "name": "Gmail account"
+        "bodyContent": "Todas as notas em trânsito do banco da IB já foram cobradas",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br"
         }
-      }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        560,
+        384
+      ],
+      "id": "dd1d4049-418b-4df1-aede-81ab8b36f389",
+      "name": "Envia texto que terminou IB",
+      "webhookId": "d4b8d5bd-73d1-479a-a1be-7b46a6a20aa9"
     },
     {
       "parameters": {
-        "sendTo": "joaopedro.mlima9@gmail.com",
+        "toRecipients": "joao.lima@inbrands.com.br",
         "subject": "=Notas em trânsito da filial {{ $('Edit Fields2').item.json.filial }}",
-        "message": "=Bom dia! <br><br> Peço que verifiquem a situação das NFs abaixo, <br> Caso já tenham sido recebidas, favor baixá-las. <br><br>  <table width=\"100%\" cellpadding=\"6\" cellspacing=\"0\"        style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\">     <thead>         <tr style=\"background-color: #f2f2f2;\">             <th style=\"border: 1px solid #ccc;\">Filial destino</th>             <th style=\"border: 1px solid #ccc;\">Filial origem</th>             <th style=\"border: 1px solid #ccc;\">NF transferência</th>             <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>         </tr>     </thead>     <tbody>         {{ $json.data.map(d => `         <tr>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.filial_destino}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.filial_origem}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.NF}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d[\"dia em transito\"]}             </td>         </tr>         `).join('') }}     </tbody> </table>",
-        "options": {}
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\nNão recebida (caso não tenha chegado)<br>\nRecebida e baixada (caso tenha recebido: efetuar baixa)\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br",
+          "importance": "High",
+          "bodyContentType": "html"
+        }
       },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
       "position": [
-        1312,
-        304
+        2064,
+        576
       ],
-      "id": "a5e8ed41-b409-401a-8f2e-2146a43c694f",
-      "name": "Send a message2",
-      "webhookId": "77119a06-c05b-4abc-b79a-e5577620bf2a",
+      "id": "359e599e-c324-4edb-844a-26526ffc8894",
+      "name": "Envia cobrança IB",
+      "webhookId": "857209e0-32e7-46b1-89a8-4f6620b7c14a"
+    },
+    {
+      "parameters": {
+        "toRecipients": "joao.lima@inbrands.com.br",
+        "subject": "=Notas em trânsito da filial {{ $('Edit Fields4').item.json.filial.trim() }}",
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\nNão recebida (caso não tenha chegado)<br>\nRecebida e baixada (caso tenha recebido: efetuar baixa)\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $('Filtra dado com o valor 0').first().json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $('Filtra dado com o valor 0').first().json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br",
+          "importance": "High",
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        1168
+      ],
+      "id": "1aff6c81-83a2-4e48-87fb-cd0a7a94981d",
+      "name": "Envia cobrança TH",
+      "webhookId": "640e35c7-a318-4b0a-b8f3-808a3c837a7b"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select filial\n    , email_loja\n    , email_supervisor\nfrom TB_FILIAIS_TRANSITO\nwhere inativo = 0"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        48,
+        544
+      ],
+      "id": "9af9e92b-4986-4ba5-968f-0224e11ee976",
+      "name": "Microsoft SQL4",
       "credentials": {
-        "gmailOAuth2": {
-          "id": "zAJHLyiZJO2Vm6S2",
-          "name": "Gmail account"
+        "microsoftSql": {
+          "id": "KtBQ1uO6JMALaFpK",
+          "name": "Banco IB"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "=joaopedro.mlima9@gmail.com",
-        "subject": "=Notas em trânsito da filial {{ $('Edit Fields4').item.json.filial }}",
-        "message": "=Bom dia! <br><br> Peço que verifiquem a situação das NFs abaixo, <br> Caso já tenham sido recebidas, favor baixá-las. <br><br>  <table width=\"100%\" cellpadding=\"6\" cellspacing=\"0\"        style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\">     <thead>         <tr style=\"background-color: #f2f2f2;\">             <th style=\"border: 1px solid #ccc;\">Filial destino</th>             <th style=\"border: 1px solid #ccc;\">Filial origem</th>             <th style=\"border: 1px solid #ccc;\">NF transferência</th>             <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>         </tr>     </thead>     <tbody>         {{ $json.data.map(d => `         <tr>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.filial_destino}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.filial_origem}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d.NF}             </td>             <td style=\"border: 1px solid #ccc; text-align: center;\">                 ${d[\"dia em transito\"]}             </td>         </tr>         `).join('') }}     </tbody> </table>",
-        "options": {}
+        "jsCode": "const filtered = items[0].json.data.filter(d => Number(d.valor) !== 0);\nreturn [{ json: { data: filtered } }];"
       },
-      "type": "n8n-nodes-base.gmail",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        1312,
-        896
+        1840,
+        576
       ],
-      "id": "3615e4ef-3b89-4f1d-9b3b-53462b333d1a",
-      "name": "Send a message3",
-      "webhookId": "91c4e964-75af-4320-ade1-8442d9325a8e",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "zAJHLyiZJO2Vm6S2",
-          "name": "Gmail account"
-        }
-      }
+      "id": "aa4d0cf8-15e8-4890-9e0c-f2bd703208d5",
+      "name": "Filtra dados com o valor 0"
+    },
+    {
+      "parameters": {
+        "jsCode": "const filtered = items[0].json.data.filter(d => Number(d.valor) !== 0);\nreturn [{ json: { data: filtered } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1872,
+        1168
+      ],
+      "id": "b7811dff-32c4-4ecb-afd1-c0c79767af4b",
+      "name": "Filtra dado com o valor 0"
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n  return [\n    {\n      json:{ email : emailEnviar }\n    }\n  ];\n}\nelse{\n  return [\n    {\n      json:{ email : emailGerente }     \n    }\n  ];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        1184
+      ],
+      "id": "057ec0a5-0ae3-4276-8a33-7385ef23344b",
+      "name": "Retorna o e-mail a ser enviado"
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n\n  return [\n    {\n      json : {email : emailEnviar}\n    }\n  ];\n}\n  \nelse{\n  return [\n    {\n      json : { email : emailGerente}\n    }\n  ];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        592
+      ],
+      "id": "27ce34b6-76db-423a-bbf1-8efb415f6653",
+      "name": "Retorna os email a ser enviados"
     }
   ],
   "pinData": {},
@@ -689,12 +773,12 @@
       "main": [
         [
           {
-            "node": "Microsoft SQL1",
+            "node": "Microsoft SQL3",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Microsoft SQL3",
+            "node": "Microsoft SQL4",
             "type": "main",
             "index": 0
           }
@@ -727,23 +811,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields6",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Send a message2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Microsoft SQL1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "Filtra dados com o valor 0",
             "type": "main",
             "index": 0
           }
@@ -754,14 +822,14 @@
       "main": [
         [
           {
-            "node": "Send a message1",
+            "node": "Envia texto que terminou IB",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields2",
+            "node": "Retorna os email a ser enviados",
             "type": "main",
             "index": 0
           }
@@ -823,12 +891,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields5",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Send a message3",
+            "node": "Filtra dado com o valor 0",
             "type": "main",
             "index": 0
           }
@@ -850,14 +913,14 @@
       "main": [
         [
           {
-            "node": "Send a message",
+            "node": "Envia texto que terminou TH",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields4",
+            "node": "Retorna o e-mail a ser enviado",
             "type": "main",
             "index": 0
           }
@@ -936,6 +999,81 @@
           }
         ]
       ]
+    },
+    "Microsoft SQL4": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia cobrança IB": {
+      "main": [
+        []
+      ]
+    },
+    "Filtra dados com o valor 0": {
+      "main": [
+        [
+          {
+            "node": "Envia cobrança IB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra dado com o valor 0": {
+      "main": [
+        [
+          {
+            "node": "Envia cobrança TH",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna o e-mail a ser enviado": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna os email a ser enviados": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia cobrança TH": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
@@ -943,7 +1081,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "2b6495e0-0a3e-4ca7-b9df-618f95eba185",
+  "versionId": "8a426f6e-04a8-40a3-aa8b-ea6b2229ba6c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "2efdf59d22b01f5b3cc02c6e5343efb0018294d35df8715600aeda534f49f95d"
