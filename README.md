@@ -127,41 +127,6 @@ O e-mail e enviado ao **gerente da loja** (`email_loja`). Caso a loja possua um 
 
 ---
 
-## Nos utilizados (n8n)
-
-| Tipo de no | Quantidade | Funcao |
-|---|---|---|
-| `Microsoft SQL` | 8 | Consultas ao banco de dados |
-| `Microsoft Outlook` | 8 | Envio de e-mails |
-| `Loop Over Items` | 4 | Iteracao por filial |
-| `If` | 8 | Condicionais de fluxo |
-| `Aggregate` | 4 | Consolidacao de dados por filial |
-| `Edit Fields` | 10+ | Mapeamento e formatacao de campos |
-| `Code` | 6 | Filtros customizados e logica de e-mail |
-| `Execute Workflow` | 2 | Chamada ao sub-workflow |
-| `Schedule Trigger` | 1 | Gatilho semanal |
-
----
-
-## Pre-requisitos
-
-- **n8n** instalado e configurado
-- Credenciais configuradas:
-  - `Microsoft SQL Server` com acesso as tabelas `LOJA_ENTRADAS`, `TRANSITO_ATUALIZAVEL` e `TB_FILIAIS_TRANSITO`
-  - `Microsoft Outlook` com permissao de envio
-- Sub-workflow `Atualiza tabela TRANSITO_ATUALIZAVEL` (ID: `Tm4r5G7GrUkK9cqz`) publicado e ativo
-
----
-
-## Como importar
-
-1. Acesse o n8n, va em **Workflows** e clique em **Import from file**
-2. Selecione o arquivo `Transito.json`
-3. Configure as credenciais de SQL Server e Outlook
-4. Ative o workflow
-
----
-
 ## Observacoes
 
 - NFs sao consideradas em atraso quando tem **mais de 20 dias** desde a emissao e `ENTRADA_CONFERIDA = 0`
