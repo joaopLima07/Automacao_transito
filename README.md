@@ -10,7 +10,7 @@ O workflow possui **duas secoes principais**, ambas disparadas pelo mesmo gatilh
 
 | Secao | Descricao |
 |---|---|
-| **Resumo da ultima semana do mes** | Envia um resumo consolidado de todas as NF em transito, somente se for a ultima segunda-feira do mes |
+| **Resumo de todas as notas em trânsito na ultima semana do mes** | Envia um resumo consolidado de todas as NF em transito, somente se for a ultima segunda-feira do mês |
 | **Cobrancas normais** | Envia e-mails de cobranca para cada filial com NF pendente, toda semana |
 
 ---
@@ -109,12 +109,12 @@ O e-mail e enviado ao **gerente da loja** (`email_loja`). Caso a loja possua um 
 | Tipo | Quando | Destinatario |
 |---|---|---|
 | E-mail de cobranca | Quando ha NFs em transito sem entrada | Gerente + Supervisor da filial |
-| E-mail de conclusao | Quando todas as NFs foram cobradas | Equipe interna |
+| E-mail de conclusao | Quando todas as NFs foram cobradas | Gerente + Supervisor da filial |
 
 ### Filiais monitoradas
 
-- **IB** (Inbrands)
-- **TH** (outra filial)
+- **IB** (Todas filiais no banco IB)
+- **TH** (Filiais da TH)
 - Demais filiais ativas na tabela `TB_FILIAIS_TRANSITO`
 
 ---
