@@ -3,44 +3,24 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "cronExpression",
-              "expression": "0 0 04 * * 1"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -256,
-        832
-      ],
-      "id": "ddce6f96-b4fd-470e-b432-e99a5022db40",
-      "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "select a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n\t, a.valor_total\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n    \t\tand a.FILIAL_ORIGEM = b.filial_origem \n    \t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\nwhere a.emissao < dateadd(day, -20, GETDATE())\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\n\tand b.data_envio is null\norder by a.emissao asc"
       },
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        1008,
-        592
+        2512,
+        1904
       ],
-      "id": "47db714b-b795-4248-ab3a-0d1fa1509348",
+      "id": "6685c46d-3755-463e-80f1-770a50a14f1c",
       "name": "Microsoft SQL",
       "alwaysOutputData": true,
       "notesInFlow": false,
       "retryOnFail": true,
       "credentials": {
         "microsoftSql": {
-          "id": "KtBQ1uO6JMALaFpK",
-          "name": "Banco IB"
+          "id": "KIqR42fKtve5zSx6",
+          "name": "DBELLUS / prod"
         }
       }
     },
@@ -73,18 +53,6 @@
               "type": "string"
             },
             {
-              "id": "ed72e465-7312-4552-94ea-c29553e00b26",
-              "name": "email_gerente",
-              "value": "={{ $json.email_gerente.replaceAll(\";\", \",\") }}",
-              "type": "string"
-            },
-            {
-              "id": "02dba7ea-7271-4834-8f71-0c0e747e1966",
-              "name": "email_supervisor",
-              "value": "={{ $json.EMAIL_SUPERVISOR }}",
-              "type": "string"
-            },
-            {
               "id": "8dbfbe7f-0396-42d0-b5e0-983c32bf1fc8",
               "name": "emissao",
               "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy') }}",
@@ -103,10 +71,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1424,
-        576
+        2960,
+        1872
       ],
-      "id": "0f56ebfb-4b31-4d8e-a6ec-37768f38fbb0",
+      "id": "f63b131c-4b0c-4272-abf4-a28fa98dd731",
       "name": "Edit Fields"
     },
     {
@@ -117,10 +85,10 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1632,
-        576
+        3200,
+        1872
       ],
-      "id": "38872eec-3d00-4cd4-9031-00bbf9d55029",
+      "id": "cd6a182a-cf21-4c53-8b71-7a47d9d2ebc5",
       "name": "Aggregate"
     },
     {
@@ -130,10 +98,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        304,
-        544
+        1840,
+        1888
       ],
-      "id": "e8e5b1c8-f2f4-4c5d-8234-7eead3c3b3d7",
+      "id": "a76e76a8-0d2f-41de-ab9d-0f497689128e",
       "name": "Loop Over Items"
     },
     {
@@ -159,10 +127,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        752,
-        592
+        2288,
+        1904
       ],
-      "id": "09bea885-d35a-4072-a028-3b7a6cb22696",
+      "id": "55e3bd52-ceac-4f2d-ae69-f225a667e318",
       "name": "Edit Fields2"
     },
     {
@@ -193,10 +161,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1200,
-        592
+        2736,
+        1888
       ],
-      "id": "8db7dc39-102b-4cac-8081-5fc4297f2f9b",
+      "id": "a40724b6-eeb2-4061-bcc8-402c5d398032",
       "name": "If"
     },
     {
@@ -207,18 +175,18 @@
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        1024,
-        1184
+        2496,
+        2624
       ],
-      "id": "83287e13-5cf1-4cae-bc46-775d417d5892",
+      "id": "ea0a0c0b-1b64-428e-a30f-723ed5772c85",
       "name": "Microsoft SQL2",
       "alwaysOutputData": true,
       "notesInFlow": false,
       "retryOnFail": true,
       "credentials": {
         "microsoftSql": {
-          "id": "UkgZstSJ5Wj9ofPE",
-          "name": "Banco TH"
+          "id": "9d5fwqBkz0G7YyUo",
+          "name": "DBTommy / prod"
         }
       }
     },
@@ -251,12 +219,6 @@
               "type": "string"
             },
             {
-              "id": "ed8008ab-7c93-4e0d-abe5-0334777adce8",
-              "name": "email_gerente",
-              "value": "={{ $json.email_gerente }}",
-              "type": "string"
-            },
-            {
               "id": "46a56a5e-3803-450c-8435-4ae19895804a",
               "name": "emissao",
               "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy')}}",
@@ -275,10 +237,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1488,
-        1168
+        2928,
+        2608
       ],
-      "id": "bdc8601d-5a2f-4aac-9142-b0991850b6fa",
+      "id": "d15134a1-02d9-4061-97c5-9da183ec3829",
       "name": "Edit Fields3"
     },
     {
@@ -289,10 +251,10 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1680,
-        1168
+        3168,
+        2608
       ],
-      "id": "fbaa91d0-005f-4ceb-9dff-b9cdf1dc4b8b",
+      "id": "2c814251-61fa-4bf7-8788-990e44c104fb",
       "name": "Aggregate1"
     },
     {
@@ -303,15 +265,17 @@
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        48,
-        1136
+        1584,
+        2608
       ],
-      "id": "df47bf71-1326-4486-8fb2-8658c354018a",
+      "id": "144f6f30-ff1f-47d7-aa3d-7bb1d9c9848a",
       "name": "Microsoft SQL3",
+      "retryOnFail": true,
+      "alwaysOutputData": false,
       "credentials": {
         "microsoftSql": {
-          "id": "UkgZstSJ5Wj9ofPE",
-          "name": "Banco TH"
+          "id": "9d5fwqBkz0G7YyUo",
+          "name": "DBTommy / prod"
         }
       }
     },
@@ -322,10 +286,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        336,
-        1136
+        1840,
+        2608
       ],
-      "id": "c094dfe3-51de-4945-a891-ea57b81321ca",
+      "id": "bd11a92d-0d72-4169-9f44-7a8a47888c02",
       "name": "Loop Over Items1"
     },
     {
@@ -351,10 +315,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        784,
-        1184
+        2272,
+        2624
       ],
-      "id": "e4929533-5fbe-4eb4-915e-11a8f9efd75d",
+      "id": "cd9879dc-c449-46a3-b927-de4abb2006f2",
       "name": "Edit Fields4"
     },
     {
@@ -385,19 +349,19 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1264,
-        1184
+        2704,
+        2624
       ],
-      "id": "d1c31438-202d-4af6-8bdb-86ee1ef0ab1d",
+      "id": "d0180a34-4a92-40c5-a1f8-cc1b860865e7",
       "name": "If1"
     },
     {
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "Jim7tZpkyssIpQFLjPwKf",
+          "value": "Tm4r5G7GrUkK9cqz",
           "mode": "list",
-          "cachedResultUrl": "/workflow/Jim7tZpkyssIpQFLjPwKf",
+          "cachedResultUrl": "/workflow/Tm4r5G7GrUkK9cqz",
           "cachedResultName": "Atualiza tabela TRANSITO_ATUALIZAVEL"
         },
         "workflowInputs": {
@@ -415,10 +379,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        2432,
-        1344
+        4176,
+        2704
       ],
-      "id": "76dfa1e2-609d-44ca-bb80-6f3f24806b8e",
+      "id": "1f8a7788-e037-4ba9-9ce1-c6d4ddb1613a",
       "name": "Call 'Atualiza tabela TRANSITO_ATUALIZAVEL'1"
     },
     {
@@ -444,10 +408,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2128,
-        1344
+        3888,
+        2704
       ],
-      "id": "1c42addf-4aff-4168-8d55-1b699e974f19",
+      "id": "dd66a2cd-d166-47c3-bfcf-6c7076742ea5",
       "name": "Edit Fields5"
     },
     {
@@ -473,41 +437,41 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2048,
-        752
+        3872,
+        1936
       ],
-      "id": "666aea17-f10b-46db-a4be-2bab8b6e2a06",
+      "id": "93375c61-364f-4dae-8a81-96e26cf55752",
       "name": "Edit Fields6"
     },
     {
       "parameters": {
         "content": "## Query para pegar todas as filiais que tem nota de entrada aberta\n",
-        "height": 880,
+        "height": 1024,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -16,
-        384
+        1504,
+        1728
       ],
-      "id": "7add95fa-4aaa-4a9c-9192-e523f71a8f8d",
+      "id": "ba284720-2c4e-4d2e-bc40-718210062a8b",
       "name": "Sticky Note"
     },
     {
       "parameters": {
         "content": "## Query que faz a verificação se já não foi cobrada, e pega os dados",
-        "height": 992,
+        "height": 1136,
         "width": 208,
         "color": 3
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        960,
-        352
+        2448,
+        1632
       ],
-      "id": "d02281b3-a447-471c-b16d-591eaaa65388",
+      "id": "e5dac94e-30af-4d7a-a424-c86ac9e37f2e",
       "name": "Sticky Note1"
     },
     {
@@ -519,10 +483,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2000,
-        480
+        3776,
+        1600
       ],
-      "id": "cf7e3f69-7ca3-4065-9060-f2c658a1fea0",
+      "id": "29fb3d48-3aaf-4494-a7e3-691dc276f877",
       "name": "Sticky Note2"
     },
     {
@@ -534,10 +498,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2048,
-        1056
+        3760,
+        2336
       ],
-      "id": "d41c596e-bbd1-4d76-8a67-b3855fd3e83b",
+      "id": "11ca8967-0b34-47d7-bfa0-1b63c5df9726",
       "name": "Sticky Note3"
     },
     {
@@ -549,10 +513,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        464,
-        848
+        1984,
+        2288
       ],
-      "id": "14dfe852-ab78-4197-87ac-fc6839cd26d2",
+      "id": "6ff0e434-30f3-4728-9398-e7f98e184a3c",
       "name": "Sticky Note4"
     },
     {
@@ -564,26 +528,26 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        480,
-        240
+        2000,
+        1552
       ],
-      "id": "bb0f6785-e8db-43c6-a5ee-e7eed8b80551",
+      "id": "dc97c033-853d-4f47-8564-0b314856ade2",
       "name": "Sticky Note5"
     },
     {
       "parameters": {
         "content": "## Envia os dados para um sub-workflow para dar baixa na tabela TRANSITO_ATUALIZAVEL",
-        "height": 960,
+        "height": 1136,
         "width": 320,
-        "color": 5
+        "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2336,
-        576
+        4064,
+        1760
       ],
-      "id": "6716c718-a64e-4dd4-9489-25852e705f28",
+      "id": "2b5c45b5-2e79-48b4-95b5-0c2761906bf5",
       "name": "Sticky Note6"
     },
     {
@@ -608,15 +572,15 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        2432,
-        752
+        4144,
+        1936
       ],
-      "id": "4774e7c9-a041-4df5-af77-8286ce73a147",
+      "id": "6f611669-401d-4513-9ba1-c22226be989d",
       "name": "Call 'Atualiza tabela TRANSITO_ATUALIZAVEL'"
     },
     {
       "parameters": {
-        "toRecipients": "joao.lima@inbrands.com.br;rogerio.andrade@inbrands.com.br",
+        "toRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
         "subject": "Notas em trânsito",
         "bodyContent": "Todas as notas do banco da TH já foram cobradas.",
         "additionalFields": {
@@ -626,16 +590,24 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        544,
-        992
+        2048,
+        2448
       ],
-      "id": "44b6779d-7adf-4e2f-bde1-36481bba3dbc",
+      "id": "36c4fa0e-a7c8-4926-8974-3c66986affec",
       "name": "Envia texto que terminou TH",
-      "webhookId": "38764517-9d1b-453d-bbff-d474414375e7"
+      "webhookId": "38764517-9d1b-453d-bbff-d474414375e7",
+      "executeOnce": true,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
     },
     {
       "parameters": {
-        "toRecipients": "joao.lima@inbrands.com.br;rogerio.andrade@inbrands.com.br",
+        "toRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
         "subject": "Trânsito notas banco IB",
         "bodyContent": "Todas as notas em trânsito do banco da IB já foram cobradas",
         "additionalFields": {
@@ -645,40 +617,28 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        560,
-        384
-      ],
-      "id": "dd1d4049-418b-4df1-aede-81ab8b36f389",
-      "name": "Envia texto que terminou IB",
-      "webhookId": "d4b8d5bd-73d1-479a-a1be-7b46a6a20aa9"
-    },
-    {
-      "parameters": {
-        "toRecipients": "joao.lima@inbrands.com.br",
-        "subject": "=Notas em trânsito da filial {{ $('Edit Fields2').item.json.filial }}",
-        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\nNão recebida (caso não tenha chegado)<br>\nRecebida e baixada (caso tenha recebido: efetuar baixa)\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
-        "additionalFields": {
-          "from": "automacaoinbrands@inbrands.com.br",
-          "importance": "High",
-          "bodyContentType": "html"
-        }
-      },
-      "type": "n8n-nodes-base.microsoftOutlook",
-      "typeVersion": 2,
-      "position": [
         2064,
-        576
+        1696
       ],
-      "id": "359e599e-c324-4edb-844a-26526ffc8894",
-      "name": "Envia cobrança IB",
-      "webhookId": "857209e0-32e7-46b1-89a8-4f6620b7c14a"
+      "id": "6b4bcb28-44b7-46f5-8776-7e64887eb055",
+      "name": "Envia texto que terminou IB",
+      "webhookId": "d4b8d5bd-73d1-479a-a1be-7b46a6a20aa9",
+      "executeOnce": true,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
     },
     {
       "parameters": {
-        "toRecipients": "joao.lima@inbrands.com.br",
-        "subject": "=Notas em trânsito da filial {{ $('Edit Fields4').item.json.filial.trim() }}",
-        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\nNão recebida (caso não tenha chegado)<br>\nRecebida e baixada (caso tenha recebido: efetuar baixa)\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $('Filtra dado com o valor 0').first().json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $('Filtra dado com o valor 0').first().json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "toRecipients": "={{ $('Edit Fields2').item.json.email_enviar }}",
+        "subject": "=Notas em trânsito da filial {{ $('Edit Fields2').item.json.filial }}",
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\n<ul>\n<li>Não recebida (caso não tenha chegado);</li><br>\n<li>Recebida e baixada (caso tenha recebido: efetuar baixa).</li>\n</ul>\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
         "additionalFields": {
+          "ccRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
           "from": "automacaoinbrands@inbrands.com.br",
           "importance": "High",
           "bodyContentType": "html"
@@ -687,12 +647,50 @@
       "type": "n8n-nodes-base.microsoftOutlook",
       "typeVersion": 2,
       "position": [
-        2112,
-        1168
+        3840,
+        1696
       ],
-      "id": "1aff6c81-83a2-4e48-87fb-cd0a7a94981d",
+      "id": "7f6625f4-ec32-443a-88bb-125bf66ac478",
+      "name": "Envia cobrança IB",
+      "webhookId": "857209e0-32e7-46b1-89a8-4f6620b7c14a",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Edit Fields4').item.json.email_enviar }}",
+        "subject": "=Notas em trânsito da filial {{ $('Edit Fields4').item.json.filial.trim() }}",
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\n<ul>\n<li>Não recebida (caso não tenha chegado);</li><br>\n<li>Recebida e baixada (caso tenha recebido: efetuar baixa).</li>\n</ul>\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $('Filtra dado com o valor 0').first().json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $('Filtra dado com o valor 0').first().json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "additionalFields": {
+          "ccRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
+          "from": "automacaoinbrands@inbrands.com.br",
+          "importance": "High",
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3840,
+        2416
+      ],
+      "id": "8f96455a-41f9-4037-bbb8-10a187548119",
       "name": "Envia cobrança TH",
-      "webhookId": "640e35c7-a318-4b0a-b8f3-808a3c837a7b"
+      "webhookId": "640e35c7-a318-4b0a-b8f3-808a3c837a7b",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
     },
     {
       "parameters": {
@@ -702,15 +700,16 @@
       "type": "n8n-nodes-base.microsoftSql",
       "typeVersion": 1.1,
       "position": [
-        48,
-        544
+        1584,
+        1888
       ],
-      "id": "9af9e92b-4986-4ba5-968f-0224e11ee976",
+      "id": "c4543442-0770-49c9-bfce-33fa45224de7",
       "name": "Microsoft SQL4",
+      "retryOnFail": true,
       "credentials": {
         "microsoftSql": {
-          "id": "KtBQ1uO6JMALaFpK",
-          "name": "Banco IB"
+          "id": "KIqR42fKtve5zSx6",
+          "name": "DBELLUS / prod"
         }
       }
     },
@@ -721,10 +720,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1840,
-        576
+        3408,
+        1872
       ],
-      "id": "aa4d0cf8-15e8-4890-9e0c-f2bd703208d5",
+      "id": "1ba92539-22f3-4663-b701-b190afc899de",
       "name": "Filtra dados com o valor 0"
     },
     {
@@ -734,57 +733,880 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1872,
-        1168
+        3392,
+        2608
       ],
-      "id": "b7811dff-32c4-4ecb-afd1-c0c79767af4b",
+      "id": "3e520d31-9afb-4cb7-b90a-dbfa38f4c0e8",
       "name": "Filtra dado com o valor 0"
     },
     {
       "parameters": {
-        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n  return [\n    {\n      json:{ email : emailEnviar }\n    }\n  ];\n}\nelse{\n  return [\n    {\n      json:{ email : emailGerente }     \n    }\n  ];\n}"
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\" && emailSupervisor != \"NULL\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n  return [\n    {\n      json:{ email : emailEnviar }\n    }\n  ];\n}\nelse{\n  return [\n    {\n      json:{ email : emailGerente }     \n    }\n  ];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        1184
+        2048,
+        2624
       ],
-      "id": "057ec0a5-0ae3-4276-8a33-7385ef23344b",
+      "id": "13e07c4d-0872-463f-ae00-3734126f123c",
       "name": "Retorna o e-mail a ser enviado"
     },
     {
       "parameters": {
-        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n\n  return [\n    {\n      json : {email : emailEnviar}\n    }\n  ];\n}\n  \nelse{\n  return [\n    {\n      json : { email : emailGerente}\n    }\n  ];\n}"
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\" && emailSupervisor != \"NULL\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n\n  return [\n    {\n      json : {email : emailEnviar}\n    }\n  ];\n}\n  \nelse{\n  return [\n    {\n      json : { email : emailGerente}\n    }\n  ];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        528,
-        592
+        2048,
+        1904
       ],
-      "id": "27ce34b6-76db-423a-bbf1-8efb415f6653",
+      "id": "10d258b9-a2d8-4605-a429-9f74ef47c178",
       "name": "Retorna os email a ser enviados"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6e461172-734d-465b-966d-ca0a96368830",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3632,
+        1872
+      ],
+      "id": "ea4a7698-455b-4290-a5f9-f3f9f802a6e6",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b22d38c8-b7e0-41bf-b36e-ca5d959ebaf2",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3600,
+        2624
+      ],
+      "id": "dfe972ee-50f3-4534-a0b5-6a228c25d4e8",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n\t, a.valor_total\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n    \t\tand a.FILIAL_ORIGEM = b.filial_origem \n    \t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\nwhere a.emissao < dateadd(day, -20, GETDATE())\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\norder by a.emissao asc"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2528,
+        448
+      ],
+      "id": "967317b4-5d70-4c6c-98ef-5d3b52af3c49",
+      "name": "Microsoft SQL1",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "KIqR42fKtve5zSx6",
+          "name": "DBELLUS / prod"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7fa8a89f-beb8-413f-b627-2dea9587d47a",
+              "name": "NF",
+              "value": "={{ $json.numero_nf_transferencia }}",
+              "type": "string"
+            },
+            {
+              "id": "0cb688d6-6044-492a-8ca7-b02684048df0",
+              "name": "filial_destino",
+              "value": "={{ $json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "1da452b0-1554-4ecc-9011-139da7e5c531",
+              "name": "filial_origem",
+              "value": "={{ $json.filial_origem }}",
+              "type": "string"
+            },
+            {
+              "id": "12a40e48-bf39-4b80-bc84-56f620889daa",
+              "name": "dia em transito",
+              "value": "={{ Math.floor(($now.toJSDate() - new Date($json.emissao)) / (1000 * 60 * 60 * 24)) }}\n",
+              "type": "string"
+            },
+            {
+              "id": "8dbfbe7f-0396-42d0-b5e0-983c32bf1fc8",
+              "name": "emissao",
+              "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy') }}",
+              "type": "string"
+            },
+            {
+              "id": "d6979faa-d5b3-4a45-b950-b8833895e096",
+              "name": "valor",
+              "value": "={{ $json.valor_total }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2976,
+        448
+      ],
+      "id": "8c77eddf-5327-4f86-a414-a34d041b589a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        448
+      ],
+      "id": "2f24cf8e-82cd-4a1a-90e4-c581dc983822",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1856,
+        432
+      ],
+      "id": "eb25cddd-79eb-4921-a219-ea748465aebe",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50f2aebc-b7bf-44ad-a83c-da93f67d2062",
+              "name": "filial",
+              "value": "={{ $('Loop Over Items2').item.json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "50206051-1938-458d-ab93-fd7d1ab99c3f",
+              "name": "email_enviar",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2288,
+        448
+      ],
+      "id": "edbb11e4-d292-417a-8c83-1e4c9f34cb2d",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3799a57d-1c4f-49fb-9ed9-79a4a076ff16",
+              "leftValue": "={{ $json.filial }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2752,
+        448
+      ],
+      "id": "7286107e-591c-41f6-aa4b-6e642724710c",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select a.filial\n\t, a.filial_origem\n\t, a.numero_nf_transferencia\n\t, a.emissao\n    , a.valor_total\nfrom LOJA_ENTRADAS a\n\tleft join TRANSITO_ATUALIZAVEL b on a.filial = b.filial_destino\n    \t\tand a.FILIAL_ORIGEM = b.filial_origem \n    \t\tand a.NUMERO_NF_TRANSFERENCIA = b.numero_NF\nwhere a.emissao < dateadd(day, -20, getdate())\n\tand a.ENTRADA_CONFERIDA = 0\n\tand a.filial = '{{ $json.filial }}'\norder by a.emissao asc"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2528,
+        1184
+      ],
+      "id": "1f64953b-7aad-4856-a433-5683e18163a3",
+      "name": "Microsoft SQL6",
+      "alwaysOutputData": true,
+      "notesInFlow": false,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "9d5fwqBkz0G7YyUo",
+          "name": "DBTommy / prod"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7fa8a89f-beb8-413f-b627-2dea9587d47a",
+              "name": "NF",
+              "value": "={{ $json.numero_nf_transferencia }}",
+              "type": "string"
+            },
+            {
+              "id": "0cb688d6-6044-492a-8ca7-b02684048df0",
+              "name": "filial_destino",
+              "value": "={{ $json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "1da452b0-1554-4ecc-9011-139da7e5c531",
+              "name": "filial_origem",
+              "value": "={{ $json.filial_origem }}",
+              "type": "string"
+            },
+            {
+              "id": "12a40e48-bf39-4b80-bc84-56f620889daa",
+              "name": "dia em transito",
+              "value": "={{ Math.floor(($now.toJSDate() - new Date($json.emissao)) / (1000 * 60 * 60 * 24)) }}\n",
+              "type": "string"
+            },
+            {
+              "id": "46a56a5e-3803-450c-8435-4ae19895804a",
+              "name": "emissao",
+              "value": "={{ $json.emissao.toDateTime().format('dd/MM/yyyy')}}",
+              "type": "string"
+            },
+            {
+              "id": "040533ce-38a9-40c0-90fb-0e3a2a64e7d9",
+              "name": "valor",
+              "value": "={{$json.valor_total}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2976,
+        1152
+      ],
+      "id": "ca74c7d8-2954-42dd-97fd-bbe7015a2d9a",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        1152
+      ],
+      "id": "ad8c673d-da40-4c73-b17e-cad66abdc59a",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select filial\n    , email_loja\n    , email_supervisor\nfrom TB_FILIAIS_TRANSITO\nwhere inativo = 0"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        1168
+      ],
+      "id": "26bb1359-5453-4ccc-afd3-47e5d8288b14",
+      "name": "Microsoft SQL7",
+      "retryOnFail": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "9d5fwqBkz0G7YyUo",
+          "name": "DBTommy / prod"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1856,
+        1168
+      ],
+      "id": "eb2127d9-b776-4f02-910a-fe2ab5d54490",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50f2aebc-b7bf-44ad-a83c-da93f67d2062",
+              "name": "filial",
+              "value": "={{ $('Loop Over Items3').item.json.filial }}",
+              "type": "string"
+            },
+            {
+              "id": "0d91d94e-819c-4e95-96ac-1388730a6cba",
+              "name": "email_enviar",
+              "value": "={{ $json.email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2272,
+        1184
+      ],
+      "id": "eb3bb793-eb55-4565-bbc5-8e8e508c3a8b",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3799a57d-1c4f-49fb-9ed9-79a4a076ff16",
+              "leftValue": "={{ $json.filial }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2752,
+        1152
+      ],
+      "id": "2dfce1dd-19fe-4781-ac3c-ab07fe0802aa",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "content": "## Query para pegar todas as filiais que tem nota de entrada aberta\n",
+        "height": 880,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        448
+      ],
+      "id": "c4877c6f-971a-46ba-8ee3-0af0f5a74a06",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Envia o e-mail para as lojas\n ",
+        "height": 928,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3808,
+        416
+      ],
+      "id": "993585e6-5e52-4b4a-a648-73fc2a256d39",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Envia e-mail para notificar que todas as notas ja foram cobradas\n",
+        "height": 272,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        816
+      ],
+      "id": "4b6ac48e-6bc0-44c4-8acc-ccc6b931f4ba",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "toRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
+        "subject": "Notas em trânsito",
+        "bodyContent": "Todas as notas do banco da TH já foram cobradas.",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        976
+      ],
+      "id": "dd7939da-84bc-4f0f-9642-084ba572347f",
+      "name": "Envia texto que terminou TH1",
+      "webhookId": "38764517-9d1b-453d-bbff-d474414375e7",
+      "executeOnce": true,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
+        "subject": "Trânsito notas banco IB",
+        "bodyContent": "Todas as notas em trânsito do banco da IB já foram cobradas",
+        "additionalFields": {
+          "from": "automacaoinbrands@inbrands.com.br"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        240
+      ],
+      "id": "1b4e6a45-c884-4cd7-8c0e-f38a13307c26",
+      "name": "Envia texto que terminou IB1",
+      "webhookId": "d4b8d5bd-73d1-479a-a1be-7b46a6a20aa9",
+      "executeOnce": true,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Edit Fields7').item.json.email_enviar }}",
+        "subject": "=Notas em trânsito da filial {{ $('Edit Fields7').item.json.filial }}",
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\n<ul>\n<li>Não recebida (caso não tenha chegado);</li><br>\n<li>Recebida e baixada (caso tenha recebido: efetuar baixa).</li>\n</ul>\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "additionalFields": {
+          "ccRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
+          "from": "automacaoinbrands@inbrands.com.br",
+          "importance": "High",
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3872,
+        512
+      ],
+      "id": "ae0dfb07-75a9-4f07-ba22-d82a788b3e1d",
+      "name": "Envia cobrança IB1",
+      "webhookId": "857209e0-32e7-46b1-89a8-4f6620b7c14a",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Edit Fields9').item.json.email_enviar }}",
+        "subject": "=Notas em trânsito da filial {{ $('Edit Fields9').item.json.filial.trim() }}",
+        "bodyContent": "=Preciso que verifiquem com extrema urgência as notas fiscais abaixo.\n<br><br>\nSe já foram recebidas, por favor baixar.\n<br><br>\nGentileza retornar com as seguintes informações, na coluna observações:<br>\n<ul>\n<li>Não recebida (caso não tenha chegado);</li><br>\n<li>Recebida e baixada (caso tenha recebido: efetuar baixa).</li>\n</ul>\n<br><br>\n\n<table\n  width=\"100%\"\n  cellpadding=\"6\"\n  cellspacing=\"0\"\n  style=\"border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;\"\n>\n  <thead>\n    <tr style=\"background-color: #f2f2f2;\">\n      <th style=\"border: 1px solid #ccc;\">Filial destino</th>\n      <th style=\"border: 1px solid #ccc;\">Filial origem</th>\n      <th style=\"border: 1px solid #ccc;\">NF transferência</th>\n      <th style=\"border: 1px solid #ccc;\">Emissão</th>\n      <th style=\"border: 1px solid #ccc;\">Valor total</th>\n      <th style=\"border: 1px solid #ccc;\">Dias em trânsito</th>\n      <th style=\"border: 1px solid #ccc;\">Observações</th>\n    </tr>\n  </thead>\n  <tbody>\n    {{ $('Filtra dado com o valor ').first().json.data.map(d => `\n    <tr>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_destino.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.filial_origem.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.NF.trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d.emissao}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">R$ ${parseFloat(d.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">${d[\"dia em transito\"].trim()}</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\"></td>\n    </tr>\n    `).join('') }}\n    <tr style=\"background-color: #f2f2f2; font-weight: bold;\">\n      <td style=\"border: 1px solid #ccc; text-align: center;\" colspan=\"4\">Total geral</td>\n      <td style=\"border: 1px solid #ccc; text-align: center;\">\n        R$ {{ $('Filtra dado com o valor ').first().json.data.reduce((acc, d) => acc + parseFloat(d.valor), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}\n      </td>\n      <td style=\"border: 1px solid #ccc;\" colspan=\"2\"></td>\n    </tr>\n  </tbody>\n</table>",
+        "additionalFields": {
+          "ccRecipients": "joao.lima@inbrands.com.br,rogerio.andrade@inbrands.com.br,luana.bailon@inbrands.com.br,kaiky.silva@inbrands.com.br,iracildo.nascimento@inbrands.com.br",
+          "from": "automacaoinbrands@inbrands.com.br",
+          "importance": "High",
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        3872,
+        1168
+      ],
+      "id": "fa9c3568-ada9-413d-8faa-2496ff7f3f82",
+      "name": "Envia cobrança TH1",
+      "webhookId": "640e35c7-a318-4b0a-b8f3-808a3c837a7b",
+      "retryOnFail": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VNYRdi981jknAtyj",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select filial\n    , email_loja\n    , email_supervisor\nfrom TB_FILIAIS_TRANSITO\nwhere inativo = 0"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1584,
+        640
+      ],
+      "id": "39887b72-8993-439c-94c3-0f59bcf1e31c",
+      "name": "Microsoft SQL8",
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "KIqR42fKtve5zSx6",
+          "name": "DBELLUS / prod"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const filtered = items[0].json.data.filter(d => Number(d.valor) !== 0);\nreturn [{ json: { data: filtered } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3456,
+        448
+      ],
+      "id": "ccfb36c4-6efd-4392-94ca-8600619d795f",
+      "name": "Filtra dados com o valor "
+    },
+    {
+      "parameters": {
+        "jsCode": "const filtered = items[0].json.data.filter(d => Number(d.valor) !== 0);\nreturn [{ json: { data: filtered } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3424,
+        1152
+      ],
+      "id": "64a7f2af-b717-4df0-9615-7186a957a713",
+      "name": "Filtra dado com o valor "
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\" && emailSupervisor != \"NULL\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n  return [\n    {\n      json:{ email : emailEnviar }\n    }\n  ];\n}\nelse{\n  return [\n    {\n      json:{ email : emailGerente }     \n    }\n  ];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        1184
+      ],
+      "id": "92dca873-e304-490a-b8bf-ef79f0196818",
+      "name": "Retorna o e-mail a ser enviado1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailGerente = $json.email_loja\nconst emailSupervisor = $json.email_supervisor\n\nif (emailSupervisor != \"null\" && emailSupervisor != \"NULL\"){\n  let emailEnviar = emailGerente + \",\" + emailSupervisor\n\n  return [\n    {\n      json : {email : emailEnviar}\n    }\n  ];\n}\n  \nelse{\n  return [\n    {\n      json : { email : emailGerente}\n    }\n  ];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        448
+      ],
+      "id": "3a1b5089-3976-43b7-aff4-b6b9cddc2247",
+      "name": "Retorna os email a ser enviados1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6e461172-734d-465b-966d-ca0a96368830",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3648,
+        448
+      ],
+      "id": "7a8a5255-14df-4706-af48-eea9a5d7c4ae",
+      "name": "If7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b22d38c8-b7e0-41bf-b36e-ca5d959ebaf2",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3632,
+        1152
+      ],
+      "id": "199fc335-39b7-4edf-a96c-8d103f4ba561",
+      "name": "If8"
+    },
+    {
+      "parameters": {
+        "content": "## Query que faz a verificação se já não foi cobrada, e pega os dados",
+        "height": 1136,
+        "width": 208,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        192
+      ],
+      "id": "ffad948c-c9a5-4976-85bf-a154c7764daa",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## Envia e-mail para notificar que todas as notas ja foram cobradas\n",
+        "height": 272,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        96
+      ],
+      "id": "f3650842-632e-40bf-a44e-2f68166524fd",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "# Da um resumo de todas as NF em trânsito na ultima semana do mês se o IF der verdadeiro.\n",
+        "height": 1488,
+        "width": 2784,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        -64
+      ],
+      "id": "1c754020-1820-4cfa-a20e-63e1b41ef7b7",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "# Envia as cobranças normais para as filiais.",
+        "height": 1440,
+        "width": 3040,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        1472
+      ],
+      "id": "5bd612ba-8d04-495a-a8e0-9dcc6db476a0",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 07 * * 1"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1008,
+        1552
+      ],
+      "id": "7bdb4fd7-a571-43cb-830e-135a9df7b334",
+      "name": "Executa apenas nas segundas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f0ced3da-f89e-4720-a929-5bd2fb4025bc",
+              "leftValue": "={{ new Date(new Date().setDate(new Date().getDate() + 7)).getMonth() !== new Date().getMonth() }}",
+              "rightValue": 21,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1200,
+        1552
+      ],
+      "id": "ec73e0b5-604e-4f11-a314-b55655a5727d",
+      "name": "Ultima segunda do mês"
     }
   ],
   "pinData": {},
   "connections": {
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Microsoft SQL3",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Microsoft SQL4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Microsoft SQL": {
       "main": [
         [
@@ -1011,21 +1833,11 @@
         ]
       ]
     },
-    "Envia cobrança IB": {
-      "main": [
-        []
-      ]
-    },
     "Filtra dados com o valor 0": {
       "main": [
         [
           {
-            "node": "Envia cobrança IB",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Edit Fields6",
+            "node": "If2",
             "type": "main",
             "index": 0
           }
@@ -1036,12 +1848,7 @@
       "main": [
         [
           {
-            "node": "Envia cobrança TH",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Edit Fields5",
+            "node": "If3",
             "type": "main",
             "index": 0
           }
@@ -1070,28 +1877,392 @@
         ]
       ]
     },
-    "Envia cobrança TH": {
+    "If2": {
       "main": [
-        []
+        [
+          {
+            "node": "Envia cobrança IB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Envia cobrança TH",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL1": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "Filtra dados com o valor ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Envia texto que terminou IB1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna os email a ser enviados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Microsoft SQL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL6": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Filtra dado com o valor ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL7": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Envia texto que terminou TH1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retorna o e-mail a ser enviado1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Microsoft SQL6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL8": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra dados com o valor ": {
+      "main": [
+        [
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra dado com o valor ": {
+      "main": [
+        [
+          {
+            "node": "If8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna o e-mail a ser enviado1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna os email a ser enviados1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Envia cobrança IB1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If8": {
+      "main": [
+        [
+          {
+            "node": "Envia cobrança TH1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia cobrança IB1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia cobrança TH1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executa apenas nas segundas": {
+      "main": [
+        [
+          {
+            "node": "Ultima segunda do mês",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ultima segunda do mês": {
+      "main": [
+        [
+          {
+            "node": "Microsoft SQL8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Microsoft SQL7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Microsoft SQL3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Microsoft SQL4",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
-    "availableInMCP": false
+    "binaryMode": "separate"
   },
-  "versionId": "8a426f6e-04a8-40a3-aa8b-ea6b2229ba6c",
+  "versionId": "a7043207-fd5a-473d-acc2-6c4247fe62df",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "2efdf59d22b01f5b3cc02c6e5343efb0018294d35df8715600aeda534f49f95d"
+    "instanceId": "530e9509ba04a0eecc744064b28ba2cd3027ad5526d0a4f99550baeb0de98435"
   },
-  "id": "fmDnoxaEpf6bhPkveDU-2",
+  "id": "DIJGigOKejUuYZw3",
   "tags": [
     {
-      "updatedAt": "2026-03-19T02:34:50.223Z",
-      "createdAt": "2026-03-19T02:34:50.223Z",
-      "id": "xdonLAvP1eYGsIu9",
+      "updatedAt": "2026-04-06T12:11:24.839Z",
+      "createdAt": "2026-04-06T12:11:24.839Z",
+      "id": "VI1nLMHlKEyGIlEx",
       "name": "Transito de notas"
     }
   ]
